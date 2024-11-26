@@ -1,0 +1,29 @@
+name: Create Release
+description: "Creates a release"
+
+inputs:
+  version:
+    description: "The tag name for the release"
+    required: true
+  prerelease:
+    description: "Whether the release is a pre-release"
+    required: true
+  github_token:
+    description: "The GitHub token"
+    required: true
+  project_name:
+    description: "The name of the release"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ inputs.version }}
+        prerelease: ${{ inputs.prerelease }}
+        name: "${{inputs.project_name}} - Release ${{ inputs.version }}"
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
