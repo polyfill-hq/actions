@@ -20,10 +20,11 @@ runs:
   steps:
     - name: Create Release
       id: create_release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2.1
       with:
         tag_name: ${{ inputs.version }}
         prerelease: ${{ inputs.prerelease }}
         name: "${{inputs.project_name}} - Release ${{ inputs.version }}"
+        generate_release_notes: "true"
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
