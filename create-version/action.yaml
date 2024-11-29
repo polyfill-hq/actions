@@ -1,0 +1,32 @@
+name: env-setup
+description: "Sets up environment variables"
+inputs:
+  environment:
+    description: "Name of the environment to setup"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - if: runner.os == 'Linux'
+      run: |
+        echo "ENV=${{ inputs.environment }}
+        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%y.%m.%d.%H%M%S)
+        " >> $GITHUB_ENV
+      shell: bash
+      env:
+        TZ: Canada/Pacific
+
+    - if: runner.os == 'macOS'
+      run: |
+        echo "ENV=${{ inputs.environment }}
+        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -jf "%s" {} +%y.%m.%d.%H%M%S)
+        " >> $GITHUB_ENV
+      shell: bash
+      env:
+        TZ: Canada/Pacific
+
+    - run: |
+        echo ENV=$ENV
+        echo VERSION_FULL=$VERSION_FULL
+        echo runner.os=${{ runner.os }}
+      shell: bash
