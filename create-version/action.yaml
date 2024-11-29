@@ -10,7 +10,7 @@ runs:
     - if: runner.os == 'Linux'
       run: |
         echo "ENV=${{ inputs.environment }}
-        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%y.%m.%d.%H%M%S)
+        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%m.%d.%H%M%S)
         " >> $GITHUB_ENV
       shell: bash
       env:
@@ -19,7 +19,7 @@ runs:
     - if: runner.os == 'macOS'
       run: |
         echo "ENV=${{ inputs.environment }}
-        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -jf "%s" {} +%y.%m.%d.%H%M%S)
+        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -jf "%s" {} +%m.%d.%H%M%S)
         " >> $GITHUB_ENV
       shell: bash
       env:
