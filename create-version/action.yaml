@@ -46,5 +46,6 @@ runs:
     - run: |
         echo ENV=$ENV
         echo VERSION_FULL=$VERSION_FULL
+        echo VERSION_SHORT=$VERSION_SHORT
         echo runner.os=${{ runner.os }}
       shell: bash
