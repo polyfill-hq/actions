@@ -33,6 +33,16 @@ runs:
       env:
         TZ: Canada/Pacific
 
+    - if: runner.os == 'Windows'
+      run: |
+        $timestamp = git log -1 --format="%at"
+        $commitDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yyyy.MM.dd.HHmm"
+        $shortDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yyyy.MM.dd.HH"
+        
+        echo "VERSION_FULL=$commitDate" >> $env:GITHUB_ENV
+        echo "VERSION_SHORT=$shortDate" >> $env:GITHUB_ENV
+      shell: pwsh
+
     - run: |
         echo ENV=$ENV
         echo VERSION_FULL=$VERSION_FULL
