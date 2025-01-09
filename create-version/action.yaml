@@ -9,18 +9,26 @@ runs:
   steps:
     - if: runner.os == 'Linux'
       run: |
-        echo "ENV=${{ inputs.environment }}
-        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%m.%d.%H%M)
-        " >> $GITHUB_ENV
+        echo "ENV=${{ inputs.environment }}" >> $GITHUB_ENV
+        
+        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%Y.%m.%d.%H%M)
+        VERSION_SHORT=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%Y.%m.%d.%H)
+        
+        echo "VERSION_FULL=$VERSION_FULL" >> $GITHUB_ENV
+        echo "VERSION_SHORT=$VERSION_SHORT" >> $GITHUB_ENV
       shell: bash
       env:
         TZ: Canada/Pacific
 
     - if: runner.os == 'macOS'
       run: |
-        echo "ENV=${{ inputs.environment }}
-        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -jf "%s" {} +%m.%d.%H%M)
-        " >> $GITHUB_ENV
+        echo "ENV=${{ inputs.environment }}" >> $GITHUB_ENV
+        
+        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%Y.%m.%d.%H%M)
+        VERSION_SHORT=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%Y.%m.%d.%H)
+        
+        echo "VERSION_FULL=$VERSION_FULL" >> $GITHUB_ENV
+        echo "VERSION_SHORT=$VERSION_SHORT" >> $GITHUB_ENV
       shell: bash
       env:
         TZ: Canada/Pacific
