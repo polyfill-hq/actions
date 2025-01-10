@@ -10,8 +10,8 @@ runs:
         echo "VERSION_FULL=$VERSION_FULL" >> $GITHUB_ENV
         echo "VERSION_SHORT=$VERSION_SHORT" >> $GITHUB_ENV
       shell: bash
-      env:
-        TZ: Canada/Pacific
+      # env:
+      #   TZ: Canada/Pacific -- Doesn't work in windows
 
     - run: |
         echo VERSION_FULL=$VERSION_FULL
