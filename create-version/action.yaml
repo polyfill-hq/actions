@@ -11,8 +11,8 @@ runs:
       run: |
         echo "ENV=${{ inputs.environment }}" >> $GITHUB_ENV
         
-        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%Y.%m.%d.%H%M)
-        VERSION_SHORT=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%Y.%m.%d.%H)
+        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%y.%-m.%-d.%-H%M)
+        VERSION_SHORT=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%y.%-m.%-d.%-H)
         
         echo "VERSION_FULL=$VERSION_FULL" >> $GITHUB_ENV
         echo "VERSION_SHORT=$VERSION_SHORT" >> $GITHUB_ENV
@@ -24,8 +24,8 @@ runs:
       run: |
         echo "ENV=${{ inputs.environment }}" >> $GITHUB_ENV
         
-        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%Y.%m.%d.%H%M)
-        VERSION_SHORT=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%Y.%m.%d.%H)
+        VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%y.%-m.%-d.%-H%M)
+        VERSION_SHORT=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%y.%-m.%-d.%-H)
         
         echo "VERSION_FULL=$VERSION_FULL" >> $GITHUB_ENV
         echo "VERSION_SHORT=$VERSION_SHORT" >> $GITHUB_ENV
@@ -36,8 +36,8 @@ runs:
     - if: runner.os == 'Windows'
       run: |
         $timestamp = git log -1 --format="%at"
-        $commitDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yyyy.MM.dd.HHmm"
-        $shortDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yyyy.MM.dd.HH"
+        $commitDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yy.M.d.Hmm"
+        $shortDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yy.M.d.H"
         
         echo "VERSION_FULL=$commitDate" >> $env:GITHUB_ENV
         echo "VERSION_SHORT=$shortDate" >> $env:GITHUB_ENV
