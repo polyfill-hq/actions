@@ -1,15 +1,9 @@
 name: create-version
 description: "Creates release version based on latest git commit date"
-inputs:
-  environment:
-    description: "Name of the environment to setup"
-    required: true
 runs:
   using: "composite"
   steps:
     - run: |
-        echo "ENV=${{ inputs.environment }}" >> $GITHUB_ENV
-
         VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%y.%-m.%-d.%-H%M)
         VERSION_SHORT=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%y.%-m.%-d.%-H)
 
@@ -19,31 +13,7 @@ runs:
       env:
         TZ: Canada/Pacific
 
-    # - if: runner.os == 'macOS'
-    #   run: |
-    #     echo "ENV=${{ inputs.environment }}" >> $GITHUB_ENV
-
-    #     VERSION_FULL=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%y.%-m.%-d.%-H%M)
-    #     VERSION_SHORT=$(git log -1 --format="%at" | xargs -I{} date -d @{} +%y.%-m.%-d.%-H)
-
-    #     echo "VERSION_FULL=$VERSION_FULL" >> $GITHUB_ENV
-    #     echo "VERSION_SHORT=$VERSION_SHORT" >> $GITHUB_ENV
-    #   shell: bash
-    #   env:
-    #     TZ: Canada/Pacific
-
-    # - if: runner.os == 'Windows'
-    #   run: |
-    #     $timestamp = git log -1 --format="%at"
-    #     $commitDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yy.M.d.Hmm" -TimeZone "Pacific Standard Time"
-    #     $shortDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yy.M.d.H" -TimeZone "Pacific Standard Time"
-
-    #     echo "VERSION_FULL=$commitDate" >> $env:GITHUB_ENV
-    #     echo "VERSION_SHORT=$shortDate" >> $env:GITHUB_ENV
-    #   shell: pwsh
-
     - run: |
-        echo ENV=$ENV
         echo VERSION_FULL=$VERSION_FULL
         echo VERSION_SHORT=$VERSION_SHORT
         echo runner.os=${{ runner.os }}
