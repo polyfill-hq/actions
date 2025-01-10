@@ -36,8 +36,8 @@ runs:
     - if: runner.os == 'Windows'
       run: |
         $timestamp = git log -1 --format="%at"
-        $commitDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yy.M.d.Hmm"
-        $shortDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yy.M.d.H"
+        $commitDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yy.M.d.Hmm" -TimeZone "Pacific Standard Time"
+        $shortDate = Get-Date -Date ([datetime]::UnixEpoch.AddSeconds($timestamp)) -Format "yy.M.d.H" -TimeZone "Pacific Standard Time"
         
         echo "VERSION_FULL=$commitDate" >> $env:GITHUB_ENV
         echo "VERSION_SHORT=$shortDate" >> $env:GITHUB_ENV
