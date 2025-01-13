@@ -34,11 +34,12 @@ runs:
     - name: Generate comprehensive changelog
       shell: bash
       run: |
-        LAST_FULL_RELEASE=${{ env.last_full_release }}
-        if [ -z "$LAST_FULL_RELEASE" ]; then
-          echo "No previous full release found. Including all changes."
+        if [ "${{ env.LAST_FULL_RELEASE }}" == "all-tags" ]; then
+          # No previous release found, generate changelog for all tags
+          echo "Generating changelog for all tags..."
           git log --oneline > changelog.txt
         else
+          # Generate changelog based on the last full release tag
           echo "Changes since $LAST_FULL_RELEASE"
           git log --oneline "$LAST_FULL_RELEASE"..HEAD > changelog.txt
         fi
