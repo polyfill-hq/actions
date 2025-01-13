@@ -18,6 +18,31 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Fetch all tags
+      shell: bash
+      run: git fetch --tags
+
+    - name: Get last full release
+      shell: bash
+      run: |
+        LAST_FULL_RELEASE=$(git tag --sort=-v:refname | grep -vE '-pre|-rc' | head -n 1)
+        echo "last_full_release=$LAST_FULL_RELEASE" >> $GITHUB_ENV
+
+    - name: Generate comprehensive changelog
+      shell: bash
+      run: |
+        LAST_FULL_RELEASE=${{ env.last_full_release }}
+        if [ -z "$LAST_FULL_RELEASE" ]; then
+          echo "No previous full release found. Including all changes."
+          git log --oneline > changelog.txt
+        else
+          echo "Changes since $LAST_FULL_RELEASE"
+          git log --oneline "$LAST_FULL_RELEASE"..HEAD > changelog.txt
+        fi
+
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v2
@@ -25,6 +50,6 @@ runs:
         tag_name: ${{ inputs.version }}
         prerelease: ${{ inputs.prerelease }}
         name: "${{inputs.project_name}} - Release ${{ inputs.version }}"
-        generate_release_notes: "true"
+        body_path: changelog.txt
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
