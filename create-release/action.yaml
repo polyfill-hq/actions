@@ -28,8 +28,8 @@ runs:
     - name: Get last full release
       shell: bash
       run: |
-        LAST_FULL_RELEASE=$(git tag --sort=-v:refname | grep -vE '-pre|-rc' | head -n 1)
-        echo "last_full_release=$LAST_FULL_RELEASE" >> $GITHUB_ENV
+        # Fetch tags and filter out pre-release or release-candidate tags
+        git tag --sort=-v:refname | grep -vE '(-pre|-rc)' | head -n 1 || echo "No previous full release found"
 
     - name: Generate comprehensive changelog
       shell: bash
