@@ -30,18 +30,26 @@ runs:
       shell: bash
       run: |
         LAST_FULL_RELEASE=$(git tag --sort=-v:refname | grep -vE '(-pre|-rc)' | head -n 1)
-        echo "LAST_FULL_RELEASE=$LAST_FULL_RELEASE" >> $GITHUB_ENV
-        echo "Last full release: $LAST_FULL_RELEASE"
+        if [ -z "$LAST_FULL_RELEASE" ]; then
+          echo "No previous full release found."
+          echo "LAST_FULL_RELEASE=none" >> $GITHUB_ENV
+        else
+          echo "Last full release: $LAST_FULL_RELEASE"
+          echo "LAST_FULL_RELEASE=$LAST_FULL_RELEASE" >> $GITHUB_ENV
+        fi
 
-    - name: Generate comprehensive changelog
+    - name: Generate changelog
+      id: generate_changelog
       shell: bash
       run: |
-        if [ -z "${{ env.LAST_FULL_RELEASE }}" ]; then
-          echo "No previous full release found. Generating changelog for all commits..."
-          git log --oneline > changelog.txt
+        if [ "${{ env.LAST_FULL_RELEASE }}" == "none" ]; then
+          echo "No previous full release. Using last 20 PRs."
+          gh pr list --repo ${{ github.repository }} --state merged --limit 20 --json title -q '.[].title' > changelog.txt
         else
-          echo "Generating changelog since last full release: $LAST_FULL_RELEASE"
-          git log "$LAST_FULL_RELEASE"..HEAD --oneline > changelog.txt
+          echo "Generating changelog since $LAST_FULL_RELEASE."
+          git log "$LAST_FULL_RELEASE"..HEAD --pretty=format:"%s" | grep 'Merge pull request' | sed 's/.*#\([0-9]\+\) .*/#\1/' | while read pr; do
+            gh pr view "$pr" --repo ${{ github.repository }} --json title -q '.title'
+          done > changelog.txt
         fi
 
     - name: Create Release
@@ -50,7 +58,7 @@ runs:
       with:
         tag_name: ${{ inputs.version }}
         prerelease: ${{ inputs.prerelease }}
-        name: "${{inputs.project_name}} - Release ${{ inputs.version }}"
+        name: "${{ inputs.project_name }} - Release ${{ inputs.version }}"
         body_path: changelog.txt
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
