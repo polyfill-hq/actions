@@ -26,22 +26,22 @@ runs:
       run: git fetch --tags
 
     - name: Get last full release
+      id: get_last_full_release
       shell: bash
       run: |
-        # Fetch tags and filter out pre-release or release-candidate tags
-        git tag --sort=-v:refname | grep -vE '(-pre|-rc)' | head -n 1 || echo "No previous full release found"
+        LAST_FULL_RELEASE=$(git tag --sort=-v:refname | grep -vE '(-pre|-rc)' | head -n 1)
+        echo "LAST_FULL_RELEASE=$LAST_FULL_RELEASE" >> $GITHUB_ENV
+        echo "Last full release: $LAST_FULL_RELEASE"
 
     - name: Generate comprehensive changelog
       shell: bash
       run: |
-        if [ "${{ env.LAST_FULL_RELEASE }}" == "all-tags" ]; then
-          # No previous release found, generate changelog for all tags
-          echo "Generating changelog for all tags..."
+        if [ -z "${{ env.LAST_FULL_RELEASE }}" ]; then
+          echo "No previous full release found. Generating changelog for all commits..."
           git log --oneline > changelog.txt
         else
-          # Generate changelog based on the last full release tag
-          echo "Changes since $LAST_FULL_RELEASE"
-          git log --oneline "$LAST_FULL_RELEASE"..HEAD > changelog.txt
+          echo "Generating changelog since last full release: $LAST_FULL_RELEASE"
+          git log "$LAST_FULL_RELEASE"..HEAD --oneline > changelog.txt
         fi
 
     - name: Create Release
