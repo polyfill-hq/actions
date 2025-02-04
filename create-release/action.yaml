@@ -25,8 +25,8 @@ runs:
           --limit 100 -q '[.[] | select(.isPrerelease == true)] | sort_by(.publishedAt) | reverse | .[0].tagName' || echo "")
 
         if [[ -n "$LATEST_PRE_RELEASE_TAG" ]]; then
-          RELEASE_ID=$(gh release view "$LATEST_PRE_RELEASE_TAG" --json id,notes -q '.id')
-          RELEASE_NOTES=$(gh release view "$LATEST_PRE_RELEASE_TAG" --json notes -q '.notes')
+          RELEASE_ID=$(gh release view "$LATEST_PRE_RELEASE_TAG" --json id,body -q '.id')
+          RELEASE_NOTES=$(gh release view "$LATEST_PRE_RELEASE_TAG" --json body -q '.body')
 
           echo "release_id=$RELEASE_ID" >> $GITHUB_ENV
           echo "release_tag=$LATEST_PRE_RELEASE_TAG" >> $GITHUB_ENV
@@ -63,6 +63,4 @@ runs:
       with:
         tag_name: ${{ inputs.version }}
         prerelease: ${{ inputs.prerelease }}
-        name: "${{ inputs.project_name }} - Release ${{ inputs.version }}"
-      env:
-        GITHUB_TOKEN: ${{ inputs.github_token }}
+        name: "${{ inputs.project_name }} - Release
