@@ -63,4 +63,4 @@ runs:
       with:
         tag_name: ${{ inputs.version }}
         prerelease: ${{ inputs.prerelease }}
-        name: "${{ inputs.project_name }} - Release
+        name: "${{ inputs.project_name }} - Release"
