@@ -18,11 +18,15 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Find Existing Release
-      id: find_release
+    - name: Find Latest Pre-release
+      id: find_pre_release
       run: |
-        RELEASE_ID=$(gh release list --json id,tagName,isPrerelease -q '[.[] | select(.tagName == "${{ inputs.version }}")][0].id' || echo "")
+        LATEST_PRE_RELEASE=$(gh release list --json id,tagName,isPrerelease -q '[.[] | select(.isPrerelease == true)] | sort_by(.tagName) | reverse | .[0]')
+        RELEASE_ID=$(echo "$LATEST_PRE_RELEASE" | jq -r '.id // empty')
+        RELEASE_TAG=$(echo "$LATEST_PRE_RELEASE" | jq -r '.tagName // empty')
+
         echo "release_id=$RELEASE_ID" >> $GITHUB_ENV
+        echo "release_tag=$RELEASE_TAG" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       shell: bash
@@ -30,7 +34,7 @@ runs:
     - name: Promote Pre-release to Final Release
       if: env.release_id != '' && inputs.prerelease == 'false'
       run: |
-        gh release edit ${{ inputs.version }} \
+        gh release edit ${{ env.release_tag }} \
           --prerelease=false \
           --draft=false \
           --generate-notes
@@ -41,7 +45,7 @@ runs:
     - name: Update Existing Pre-release
       if: env.release_id != '' && inputs.prerelease == 'true'
       run: |
-        gh release edit ${{ inputs.version }} \
+        gh release edit ${{ env.release_tag }} \
           --prerelease=true \
           --generate-notes
       env:
