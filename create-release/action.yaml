@@ -21,12 +21,14 @@ runs:
     - name: Find Latest Pre-release
       id: find_pre_release
       run: |
-        LATEST_PRE_RELEASE=$(gh release list --json id,tagName,isPrerelease -q '[.[] | select(.isPrerelease == true)] | sort_by(.tagName) | reverse | .[0]')
-        RELEASE_ID=$(echo "$LATEST_PRE_RELEASE" | jq -r '.id // empty')
-        RELEASE_TAG=$(echo "$LATEST_PRE_RELEASE" | jq -r '.tagName // empty')
+        LATEST_PRE_RELEASE_TAG=$(gh release list --json tagName,isPrerelease,publishedAt \
+          --limit 100 -q '[.[] | select(.isPrerelease == true)] | sort_by(.publishedAt) | reverse | .[0].tagName' || echo "")
 
-        echo "release_id=$RELEASE_ID" >> $GITHUB_ENV
-        echo "release_tag=$RELEASE_TAG" >> $GITHUB_ENV
+        if [[ -n "$LATEST_PRE_RELEASE_TAG" ]]; then
+          RELEASE_ID=$(gh release view "$LATEST_PRE_RELEASE_TAG" --json id -q '.id')
+          echo "release_id=$RELEASE_ID" >> $GITHUB_ENV
+          echo "release_tag=$LATEST_PRE_RELEASE_TAG" >> $GITHUB_ENV
+        fi
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       shell: bash
