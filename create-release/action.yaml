@@ -25,9 +25,14 @@ runs:
           --limit 100 -q '[.[] | select(.isPrerelease == true)] | sort_by(.publishedAt) | reverse | .[0].tagName' || echo "")
 
         if [[ -n "$LATEST_PRE_RELEASE_TAG" ]]; then
-          RELEASE_ID=$(gh release view "$LATEST_PRE_RELEASE_TAG" --json id -q '.id')
+          RELEASE_ID=$(gh release view "$LATEST_PRE_RELEASE_TAG" --json id,notes -q '.id')
+          RELEASE_NOTES=$(gh release view "$LATEST_PRE_RELEASE_TAG" --json notes -q '.notes')
+
           echo "release_id=$RELEASE_ID" >> $GITHUB_ENV
           echo "release_tag=$LATEST_PRE_RELEASE_TAG" >> $GITHUB_ENV
+          echo "release_notes<<EOF" >> $GITHUB_ENV
+          echo "$RELEASE_NOTES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
         fi
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
@@ -38,8 +43,7 @@ runs:
       run: |
         gh release edit ${{ env.release_tag }} \
           --prerelease=false \
-          --draft=false \
-          --generate-notes
+          --notes "$release_notes"
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       shell: bash
@@ -48,8 +52,7 @@ runs:
       if: env.release_id != '' && inputs.prerelease == 'true'
       run: |
         gh release edit ${{ env.release_tag }} \
-          --prerelease=true \
-          --generate-notes
+          --prerelease
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       shell: bash
@@ -61,6 +64,5 @@ runs:
         tag_name: ${{ inputs.version }}
         prerelease: ${{ inputs.prerelease }}
         name: "${{ inputs.project_name }} - Release ${{ inputs.version }}"
-        generate_release_notes: "true"
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
