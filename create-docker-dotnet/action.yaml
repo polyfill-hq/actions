@@ -15,7 +15,9 @@ inputs:
   acr_password:
     description: "acr password for docker login"
     required: true
-
+  dockerfile_path:
+    description: "Path where dockerfile is"
+    required: true
 runs:
   using: "composite"
   steps:
@@ -37,7 +39,7 @@ runs:
 
     - uses: docker/build-push-action@v6
       with:
-        context: .
+        context: ${{ inputs.dockerfile_path }}
         file: Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}
