@@ -24,7 +24,7 @@ runs:
     - uses: docker/login-action@v3
       with:
         registry: ${{ inputs.registry }}
-        username: polyfill
+        username: studium33
         password: ${{ inputs.acr_password }}
 
     - id: meta
