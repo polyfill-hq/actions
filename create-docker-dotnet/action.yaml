@@ -15,8 +15,8 @@ inputs:
   acr_password:
     description: "acr password for docker login"
     required: true
-  dockerfile_path:
-    description: "Path where dockerfile is"
+  dockerfile_context:
+    description: "Dockerfile context"
     required: true
 
 runs:
@@ -38,9 +38,13 @@ runs:
           type=raw,value={{branch}}-{{sha}}-${{inputs.version}},enable={{is_default_branch}},priority=80
           type=raw,value={{branch}}-latest,priority=0
 
-    - name: Set outputs to environment variables
-      run: |
-        echo "TAGS=${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
-        echo "LABELS=${{ steps.meta.outputs.labels }}" >> $GITHUB_ENV
-      shell: bash
+    - uses: docker/build-push-action@v6
+      with:
+        context: ${{ inputs.dockerfile_context }}
+        file: Dockerfile
+        push: true
+        tags: ${{ env.TAGS }}
+        labels: ${{ env.LABELS }}
+        cache-from: type=registry,ref=${{ inputs.registry }}/${{ inputs.image_name }}:buildcache
+        cache-to: type=registry,ref=${{  inputs.registry }}/${{ inputs.image_name }}:buildcache,mode=max
 
