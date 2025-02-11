@@ -37,15 +37,15 @@ runs:
           type=raw,value={{branch}}-{{sha}}-${{inputs.version}},enable={{is_default_branch}},priority=80
           type=raw,value={{branch}}-latest,priority=0
 
-    - uses: docker/build-push-action@v6
-      with:
-        context: ${{ inputs.dockerfile_path }}
-        file: ${{ inputs.dockerfile_path }}/Dockerfile
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=registry,ref=${{ inputs.registry }}/${{ inputs.image_name }}:buildcache
-        cache-to: type=registry,ref=${{ inputs.registry }}/${{ inputs.image_name }}:buildcache,mode=max
+    # - uses: docker/build-push-action@v6
+    #   with:
+    #     context: ${{ inputs.dockerfile_path }}
+    #     file: Dockerfile
+    #     push: true
+    #     tags: ${{ steps.meta.outputs.tags }}
+    #     labels: ${{ steps.meta.outputs.labels }}
+    #     cache-from: type=registry,ref=${{ inputs.registry }}/${{ inputs.image_name }}:buildcache
+    #     cache-to: type=registry,ref=${{ inputs.registry }}/${{ inputs.image_name }}:buildcache,mode=max
 
-    - run: docker logout ${{ inputs.registry }}
-      shell: bash
+    # - run: docker logout ${{ inputs.registry }}
+    #   shell: bash
