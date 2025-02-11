@@ -39,7 +39,7 @@ runs:
           type=raw,value={{branch}}-latest,priority=0
    
     - name: Set Environment Variable
-      run: echo "DOCKER_IMAGE=${{ needs.docker_build.outputs.image }}" >> $GITHUB_ENV
+      run: echo "DOCKER_IMAGE=${{ fromJson(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_ENV
       shell: bash
 
     - uses: docker/build-push-action@v6
