@@ -40,7 +40,7 @@ runs:
     - uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.dockerfile_path }}
-        file: Dockerfile
+        file: ${{ inputs.dockerfile_path }}/Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
