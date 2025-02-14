@@ -21,10 +21,6 @@ inputs:
   dockerfile_context:
     description: "Dockerfile context"
     required: true
-outputs:
-  DOCKER_IMAGE:
-    description: "Docker image tag"
-    value: ${{ fromJson(steps.meta.outputs.json).tags[0] }}
 
 runs:
   using: "composite"
@@ -45,6 +41,10 @@ runs:
         tags: |
           type=raw,value={{branch}}-{{sha}}-${{inputs.version}},enable={{is_default_branch}},priority=80
           type=raw,value={{branch}}-latest,priority=0
+   
+    - name: Set Environment Variable
+      run: echo "DOCKER_IMAGE=${{ fromJson(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_ENV
+      shell: bash
 
     - uses: docker/build-push-action@v6
       with:
