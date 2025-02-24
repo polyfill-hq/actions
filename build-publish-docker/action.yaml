@@ -9,7 +9,7 @@ inputs:
   image_name:
     description: "Name of the Docker image"
     required: true
-  registry-username:
+  registry_username:
     description: username of registry
     required: true
   version:
