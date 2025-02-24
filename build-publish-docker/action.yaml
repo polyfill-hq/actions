@@ -9,7 +9,7 @@ inputs:
   image_name:
     description: "Name of the Docker image"
     required: true
-  username:
+  registry-username:
     description: username of registry
     required: true
   version:
@@ -41,6 +41,7 @@ runs:
         tags: |
           type=raw,value={{branch}}-{{sha}}-${{inputs.version}},enable={{is_default_branch}},priority=80
           type=raw,value={{branch}}-latest,priority=0
+          type=raw,value=${{inputs.version}}
    
     - name: Set Environment Variable
       run: echo "DOCKER_IMAGE=${{ fromJson(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_ENV
