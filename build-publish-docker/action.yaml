@@ -31,7 +31,7 @@ runs:
     - uses: docker/login-action@v3
       with:
         registry: ${{ inputs.registry }}
-        username: ${{ inputs.username }}
+        username: ${{ inputs.registry_username }}
         password: ${{ inputs.registry_password }}
 
     - id: meta
