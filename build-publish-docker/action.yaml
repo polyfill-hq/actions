@@ -23,8 +23,9 @@ inputs:
     required: true
 
 outputs:
-  docker_image:
-    value: ${{ steps.set_output.outputs.docker_image }}
+  metadata:
+    description: "Metadata of the Docker image"
+    value: ${{ steps.set_output.outputs.metadata }}
 
 runs:
   using: "composite"
@@ -46,10 +47,13 @@ runs:
           type=raw,value={{branch}}-latest,priority=0
           type=raw,value=${{inputs.version}}
 
+    - name: Set Environment Variable
+      run: echo "DOCKER_IMAGE=${{ fromJson(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_ENV
+      shell: bash
+
     - id: set_output
       run: |
-        docker_image=$(echo "${{ steps.meta.outputs.tags }}" | head -n 1)
-        echo "docker_image=$docker_image" >> $GITHUB_OUTPUT
+        echo "metadata=${{ steps.meta.outputs }}" >> $GITHUB_OUTPUT
       shell: bash
 
     - uses: docker/build-push-action@v6

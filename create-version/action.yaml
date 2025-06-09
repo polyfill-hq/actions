@@ -3,8 +3,10 @@ description: "Creates release version based on latest git commit date"
 
 outputs:
   version_full:
+    description: "Full version eg: 25.6.9.1342"
     value: ${{ steps.set_output.outputs.version_full }}
   version_short:
+    description: "Short version eg: 25.6.9.13"
     value: ${{ steps.set_output.outputs.version_short }}
 
 runs:
@@ -17,6 +19,8 @@ runs:
 
         echo "version_full=$VERSION_FULL" >> $GITHUB_OUTPUT
         echo "version_short=$VERSION_SHORT" >> $GITHUB_OUTPUT
+        echo "VERSION_FULL=$VERSION_FULL" >> $GITHUB_ENV
+        echo "VERSION_SHORT=$VERSION_SHORT" >> $GITHUB_ENV
       shell: bash
 
     - run: |
