@@ -1,0 +1,30 @@
+name: Health Check
+description: Performs a health check on a given URL with retries.
+
+inputs:
+  url:
+    description: "The URL to check"
+    required: true
+  retry_amount:
+    description: "Number of retry attempts"
+    default: "6"
+  retry_delay:
+    description: "Delay between retries in seconds"
+    default: "5"
+  sleep_before_check:
+    description: "Sleep time before the health check in seconds"
+    default: "10"
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        echo "Waiting 10 seconds before health check..."
+        sleep ${{ inputs.sleep_before_check }}
+        echo "Checking health at ${{ inputs.url }}"
+        curl --include --location --fail \
+             --retry ${{ inputs.retry_amount }} \
+             --retry-delay ${{ inputs.retry_delay }} \
+             --retry-connrefused \
+             "${{ inputs.url }}"
+      shell: bash
