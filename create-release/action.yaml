@@ -16,8 +16,7 @@ inputs:
     required: true
   target_commitish:
     description: "The commitish value that determines where the Git tag is created"
-    required: false
-    default: main
+    required: true
 
 runs:
   using: "composite"
