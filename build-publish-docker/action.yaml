@@ -30,7 +30,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-  
+
     - name: Validate required inputs
       shell: bash
       run: |
@@ -80,10 +80,6 @@ runs:
           type=raw,value={{branch}}-{{sha}}-${{inputs.version}},enable={{is_default_branch}},priority=80
           type=raw,value={{branch}}-latest,priority=0
           type=raw,value=${{inputs.version}}
-
-    - name: Set Environment Variable
-      run: echo "DOCKER_IMAGE=${{ fromJson(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_ENV
-      shell: bash
 
     - id: set_output
       run: |

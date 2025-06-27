@@ -19,8 +19,6 @@ runs:
 
         echo "version_full=$VERSION_FULL" >> $GITHUB_OUTPUT
         echo "version_short=$VERSION_SHORT" >> $GITHUB_OUTPUT
-        echo "VERSION_FULL=$VERSION_FULL" >> $GITHUB_ENV
-        echo "VERSION_SHORT=$VERSION_SHORT" >> $GITHUB_ENV
       shell: bash
 
     - run: |
