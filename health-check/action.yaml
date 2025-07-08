@@ -24,6 +24,7 @@ runs:
         if [ -z "${{ inputs.url }}" ]; then
           echo "Missing required input: url"
           exit 1
+        fi
     - run: |
         echo "Waiting 10 seconds before health check..."
         sleep ${{ inputs.sleep_before_check }}
