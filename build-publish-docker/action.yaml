@@ -21,6 +21,10 @@ inputs:
   dockerfile_context:
     description: "Dockerfile build context"
     required: true
+  file:
+    description: "Path to the Dockerfile (default is Dockerfile in the context)"
+    required: false
+    default: "Dockerfile"
 
 outputs:
   metadata:
@@ -89,7 +93,7 @@ runs:
     - uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.dockerfile_context }}
-        file: ${{ inputs.dockerfile_context }}/Dockerfile
+        file: ${{ inputs.dockerfile_context }}/${{ inputs.file}}
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
