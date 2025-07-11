@@ -89,7 +89,7 @@ runs:
     - uses: docker/build-push-action@v6
       with:
         context: ${{ inputs.dockerfile_context }}
-        file: Dockerfile
+        file: ${{ inputs.dockerfile_context }}/Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
