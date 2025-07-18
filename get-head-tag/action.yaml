@@ -1,0 +1,21 @@
+name: "Get Head Tag"
+description: "Outputs the git tag pointing at HEAD"
+inputs: {}
+outputs:
+  tag:
+    description: "Git tag pointing at HEAD"
+    value: ${{ steps.get_head_tag.outputs.tag }}
+runs:
+  using: "composite"
+  steps:
+    - name: Get head tag
+      id: get_head_tag
+      shell: bash
+      run: |
+        head_tag=$(git tag --points-at HEAD)
+        if [ -z "$head_tag" ]; then
+          echo "Error: No tag found pointing at HEAD. Most likely caused because commit wasn't deployed to dev first."
+          exit 1
+        fi
+        echo "Head tag: $head_tag"
+        echo "tag=$head_tag" >> $GITHUB_OUTPUT
