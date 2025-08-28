@@ -25,6 +25,9 @@ inputs:
     description: "Path to the Dockerfile (default is Dockerfile in the context)"
     required: false
     default: "Dockerfile"
+  build-args:
+    description: "Build arguments for the Docker build"
+    required: false
 
 outputs:
   metadata:
@@ -97,5 +100,6 @@ runs:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
+        build-args: ${{ inputs.build-args }}
         cache-from: type=registry,ref=${{ inputs.registry }}/${{ inputs.image_name }}:buildcache
         cache-to: type=registry,ref=${{ inputs.registry }}/${{ inputs.image_name }}:buildcache,mode=max
